@@ -1,0 +1,83 @@
+const _ = require("lodash");
+const Job = require("../models/job");
+
+const createJob = async (req, res) => {
+  try {
+    const {
+      role,
+      desc,
+      req: requirements,
+      exp,
+      salary,
+      location,
+      res: responsibilities,
+      type,
+      company,
+      slug,
+      applyLink,
+      date,
+    } = req.body;
+
+    if (
+      _.isNil(role) ||
+      _.isNil(desc) ||
+      _.isNil(company) ||
+      _.isNil(slug) ||
+      _.isNil(applyLink)
+    ) {
+      return res.send({
+        success: false,
+        status: 400,
+        message: "Mandatory Fields are Missing",
+        data: {},
+      });
+    }
+    //add a check for valid slug (no spaces, alphabets and - are allowed), convert alphabets to lowercase
+    //add a check for valid apply link (should be a valid url)
+    const existingSlug = await Job.findOne({ slug });
+    if (!_.isNil(existingSlug)) {
+      return res.send({
+        success: false,
+        status: 400,
+        message: "Slug Already Used",
+        data: {},
+      });
+    }
+
+    const newJob = await Job.create({
+      role,
+      description: desc,
+      requirements,
+      exp,
+      salary,
+      location,
+      responsibilities,
+      employmentType: type,
+      company,
+      slug,
+      applyLink,
+      datePosted: date,
+    });
+
+    return res.send({
+      success: true,
+      status: 200,
+      message: "Job Post Created Successfully",
+      data: {
+        postUrl: `http://localhost:30001/jobs/${newJob?.slug}`, // change it to dynamic url
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      status: 500,
+      message: "Error Creating Job Post",
+      data: {},
+    });
+  }
+};
+
+module.exports = {
+  createJob,
+};

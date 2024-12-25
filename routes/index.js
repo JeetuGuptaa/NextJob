@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const jobRoutes = require("./v1Routes/jobRoutes");
+
 router.get("/test", async (req, res) => {
   return res.send({
     success: true,
@@ -9,5 +11,7 @@ router.get("/test", async (req, res) => {
     data: {},
   });
 });
+
+router.use("/v1/jobs", jobRoutes);
 
 module.exports = router;
