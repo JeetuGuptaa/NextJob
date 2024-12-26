@@ -122,7 +122,42 @@ const getJobBySlug = async (req, res) => {
   }
 };
 
+const isSlugAvailable = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    //add a check for valid slug (no spaces, alphabets and - are allowed), convert alphabets to lowercase
+
+    const existingSlug = await Job.findOne({ slug });
+
+    if (!_.isNil(existingSlug)) {
+      return res.send({
+        success: false,
+        status: 400,
+        message: `${slug} isn't available`,
+        data: {},
+      });
+    }
+
+    return res.send({
+      success: true,
+      status: 200,
+      message: `${slug} is available`,
+      data: {},
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      status: 500,
+      message: "Error Checking Slug Availability",
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   createJob,
   getJobBySlug,
+  isSlugAvailable,
 };
