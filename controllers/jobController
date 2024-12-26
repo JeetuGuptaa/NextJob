@@ -78,6 +78,51 @@ const createJob = async (req, res) => {
   }
 };
 
+const getJobBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const job = await Job.findOne({ slug });
+
+    if (_.isNil(job)) {
+      return res.send({
+        success: false,
+        status: 404,
+        message: "Job Post Not Found",
+        data: {},
+      });
+    }
+
+    return res.send({
+      success: true,
+      status: 200,
+      message: "Job Fetched Successfully",
+      data: {
+        job: {
+          role: job.role,
+          desc: job.description,
+          req: job.requirements,
+          res: job.responsibilities,
+          salary: job.salary,
+          loc: job.location,
+          empType: job.employmentType,
+          company: job.company,
+          link: job.applyLink,
+          date: job.datePosted,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      status: 500,
+      message: "Error Fetching Job Post",
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   createJob,
+  getJobBySlug,
 };
