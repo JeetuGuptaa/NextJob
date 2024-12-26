@@ -156,8 +156,43 @@ const isSlugAvailable = async (req, res) => {
   }
 };
 
+const getAllJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({});
+
+    return res.send({
+      success: true,
+      status: 200,
+      message: "Jobs Fetched Successfully",
+      data: {
+        jobs: jobs.map((job) => ({
+          role: job.role,
+          desc: job.description,
+          req: job.requirements,
+          res: job.responsibilities,
+          salary: job.salary,
+          loc: job.location,
+          empType: job.employmentType,
+          company: job.company,
+          link: job.applyLink,
+          date: job.datePosted,
+        })),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      status: 500,
+      message: "Error Fetching Jobs",
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   createJob,
   getJobBySlug,
   isSlugAvailable,
+  getAllJobs,
 };
