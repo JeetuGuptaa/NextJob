@@ -21,7 +21,10 @@ const JobsSchema = new mongoose.Schema(
     location: {
       type: String,
     },
-    employmentType: {
+    jobType: {
+      type: String,
+    },
+    workMode: {
       type: String,
     },
     company: {
