@@ -168,6 +168,7 @@ const getAllJobs = async (req, res) => {
       message: "Jobs Fetched Successfully",
       data: {
         jobs: jobs.map((job) => ({
+          id: _.get(job, "_id"),
           role: _.get(job, "role"),
           salary: _.get(job, "salary"),
           location: _.get(job, "location"),
@@ -189,9 +190,32 @@ const getAllJobs = async (req, res) => {
   }
 };
 
+const incrementJobViews = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    await Job.updateOne({ slug }, { $inc: { views: 1 } });
+
+    return res.send({
+      success: true,
+      status: 200,
+      message: "View Incremented Successfully",
+      data: {},
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      status: 500,
+      message: "Error Incrementing View",
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   createJob,
   getJobBySlug,
   isSlugAvailable,
   getAllJobs,
+  incrementJobViews,
 };
